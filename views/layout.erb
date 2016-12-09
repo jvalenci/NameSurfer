@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Name Surfer</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body class="container">
+
+    <h1 class="jumbotron text-center">This is the main page</h1>
+
+    <input id="input" type="text" name="name">
+
+    <ul id="results">
+
+    </ul>
+
+    <div id="curve_chart" style="width: 900px; height: 500px"></div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+      let rawChartData;
+      let columns = ["Names"]
+      let colCount = 0;
+      let raw1900 = ["1900"];
+      let raw1910 = ["1910"];
+      let raw1920 = ["1920"];
+      let raw1930 = ["1930"];
+      let raw1940 = ["1940"];
+      let raw1950 = ["1950"];
+      let raw1960 = ["1960"];
+      let raw1970 = ["1970"];
+      let raw1980 = ["1980"];
+      let raw1990 = ["1990"];
+      let raw2000 = ["2000"];
+
+      $(document).ready(() => {
+        // set a listener on the textbox
+        $('#input').on("change", (evt) => {
+          let text = $('#input').val();
+          // the {text: text} sends a parameter named text with the
+          // value of what was typed in the textbox
+          $.get("/name", {name: text})
+              .done((data) => {
+                rawChartData = data['result'];
+                columns.push(rawChartData[0]);
+                raw1900.push(parseInt(rawChartData[1]));
+                raw1910.push(parseInt(rawChartData[2]));
+                raw1920.push(parseInt(rawChartData[3]));
+                raw1930.push(parseInt(rawChartData[4]));
+                raw1940.push(parseInt(rawChartData[5]));
+                raw1950.push(parseInt(rawChartData[6]));
+                raw1960.push(parseInt(rawChartData[7]));
+                raw1970.push(parseInt(rawChartData[8]));
+                raw1980.push(parseInt(rawChartData[9]));
+                raw1990.push(parseInt(rawChartData[10]));
+                raw2000.push(parseInt(rawChartData[11]));
+                google.charts.setOnLoadCallback(drawChart);
+
+                $('#input').val('');   // reset the textbox
+              })
+              .fail((xhr) => {
+                alert('Problem contacting server');
+                console.log(xhr);
+              });
+        });
+      });
+
+      function drawChart() {
+        var dataTable = new google.visualization.arrayToDataTable([
+          columns,
+          raw1900,
+          raw1910,
+          raw1920,
+          raw1930,
+          raw1940,
+          raw1950,
+          raw1960,
+          raw1970,
+          raw1980,
+          raw1990,
+          raw2000
+        ]);
+
+        console.log(rawChartData)
+
+        var options = {
+          title: 'Name surfer',
+          curveType: 'function',
+          hAxis: {title: "Year"},
+          vAxis: {title: "Popularitiy",direction: -1},
+          legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+        chart.draw(dataTable, options);
+      }
+
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+    </script>
+</body>
+</html>
