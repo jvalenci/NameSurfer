@@ -23,7 +23,6 @@
     <script>
       let rawChartData;
       let columns = ["Names"]
-      let colCount = 0;
       let raw1900 = ["1900"];
       let raw1910 = ["1910"];
       let raw1920 = ["1920"];
@@ -90,8 +89,17 @@
           title: 'Name surfer',
           curveType: 'function',
           hAxis: {title: "Year"},
-          vAxis: {title: "Popularitiy",direction: -1},
-          legend: { position: 'bottom' }
+          vAxis: {
+            title: "Popularitiy",
+            direction: -1,
+            viewWindow:{min: 0},
+            viewWindow:{max:1000}
+          },
+          legend: { position: 'bottom' },
+          animation: {
+            "startup": true,
+            duration: 1000,
+            easing: 'inAndOut'}
         };
 
         var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
