@@ -26,7 +26,6 @@ get "/name" do
     response.push(nameInfo.year1990)
     response.push(nameInfo.year2000)
 
-    puts response
     {:result => response}.to_json
   else
     halt(404)
